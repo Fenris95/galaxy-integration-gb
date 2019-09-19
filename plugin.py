@@ -17,9 +17,9 @@ titleregex = re.compile("([^\(]*) \(.*")
 datregex = re.compile("^[xz0-9]+[0-9]+[0-9]+[0-9]+\s+-")
 revregex = re.compile("^.*\(Rev (\d)\).*")
 
-class NintendoDsPlugin(Plugin):
+class NintendoGameBoyPlugin(Plugin):
 	def __init__(self, reader, writer, token):
-		super().__init__(Platform.NintendoDs, __version__, reader, writer, token)
+		super().__init__(Platform.NintendoGameBoy, __version__, reader, writer, token)
 		self.games = []
 		self.local_games_cache = self.local_games_list()
 
@@ -30,7 +30,7 @@ class NintendoDsPlugin(Plugin):
 		usercred["username"] = config.username
 		self.store_credentials(usercred)
 
-		return Authentication("NDSuserId", usercred["username"])
+		return Authentication("GBuserId", usercred["username"])
 
 	async def launch_game(self, game_id):
 		emu_path = config.emu_path
@@ -115,22 +115,42 @@ def get_games():
 
 	for rom in roms:
 		try:
-			ndsgamedata = soup.find("rom", {"name":rom + '.nds'})
-			path = config.roms_path + rom + '.nds'
-			title_id = ndsgamedata['serial'] + 'N' + (revregex.match(ndsgamedata['name'])[1] if revregex.match(ndsgamedata['name']) != None else '0')
+			gbgamedata = soup.find("rom", {"name":rom + '.gb'})
+			path = config.roms_path + rom + '.gb'
+			title_id = gbgamedata['serial'] + 'N' + (revregex.match(gbgamedata['name'])[1] if revregex.match(gbgamedata['name']) != None else '0')
 			#datregex used to check num/not-num and titleregex strip unneeded parts to create game_title
 			if datregex.match(rom):
 				results.append(
-						[path, title_id, titleregex.match(ndsgamedata['name'][7:])[1]]
+						[path, title_id, titleregex.match(gbgamedata['name'][7:])[1]]
 					)
 			else:
 				results.append(
-						[path, title_id, titleregex.match(ndsgamedata['name'])[1]]
+						[path, title_id, titleregex.match(gbgamedata['name'])[1]]
 					)
+					
 		except:
 			print('Error processing', rom)
 			
+	for rom in roms:
+		try:
+			gbgamedata = soup.find("rom", {"name":rom + '.gba'})
+			path = config.roms_path + rom + '.gba'
+			title_id = gbgamedata['serial'] + 'N' + (revregex.match(gbgamedata['name'])[1] if revregex.match(gbgamedata['name']) != None else '0')
+			#datregex used to check num/not-num and titleregex strip unneeded parts to create game_title
+			if datregex.match(rom):
+				results.append(
+						[path, title_id, titleregex.match(gbgamedata['name'][7:])[1]]
+					)
+			else:
+				results.append(
+						[path, title_id, titleregex.match(gbgamedata['name'])[1]]
+					)
+					
+		except:
+			print('Error processing', rom)	
+			
 	return results
+	
 
 def get_state_changes(old_list, new_list):
 	old_dict = {x.game_id: x.local_game_state for x in old_list}
@@ -144,13 +164,13 @@ def get_state_changes(old_list, new_list):
 	result.extend(LocalGame(id, new_dict[id]) for id in new_dict.keys() & old_dict.keys() if new_dict[id] != old_dict[id])
 	return result
 
-default_game_list = os.environ['localappdata'] + '\\GOG.com\\Galaxy\\plugins\\installed\\nds_81f936fb-39d9-48bc-b2c5-d4d45b80fbd9\\NDS-list.txt'	
+default_game_list = os.environ['localappdata'] + '\\GOG.com\\Galaxy\\plugins\\installed\\gb_70811eae-a706-4193-9d17-55fa75a60d03\\GB-list.txt'	
 if os.path.exists(config.game_list) and os.path.isfile(config.game_list):
 	game_list = config.game_list
 else:
 	game_list = default_game_list
 	
-default_game_dat = os.environ['localappdata'] + '\\GOG.com\\Galaxy\\plugins\\installed\\nds_81f936fb-39d9-48bc-b2c5-d4d45b80fbd9\\NDS.dat'	
+default_game_dat = os.environ['localappdata'] + '\\GOG.com\\Galaxy\\plugins\\installed\\gb_70811eae-a706-4193-9d17-55fa75a60d03\\GB.dat'	
 if os.path.exists(config.game_dat) and os.path.isfile(config.game_dat):
 	game_dat = config.game_dat
 else:
@@ -158,7 +178,7 @@ else:
 
 
 def main():
-	create_and_run_plugin(NintendoDsPlugin, sys.argv)
+	create_and_run_plugin(NintendoGameBoyPlugin, sys.argv)
 
 
 # run plugin event loop
