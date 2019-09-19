@@ -1,0 +1,11 @@
+{
+    "name": "Galaxy Nintendo GameBoy Plugin",
+    "platform": "ngameboy",
+    "guid": "70811eae-a706-4193-9d17-55fa75a60d03",
+    "version": "0.1.0",
+    "description": "Nintendo GameBoy, GameBoy Colour & GameBoy Advance platform integration for GOG Galaxy 2.0",
+    "author": "Fenris95",
+    "email": "n/a",
+    "url": "https://github.com/Fenris95/galaxy-integration-gb/",
+    "script": "plugin.py"
+}
