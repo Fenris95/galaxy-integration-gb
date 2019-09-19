@@ -63,4 +63,5 @@ Please note that, in order to support launching them with this plugin, the games
 
 ## Acknowledgements
 
-- Thanks to TBemme for releasing the DS integration on which this is 99.99% based. I'm no coder and I've only changed a couple of things through experimentation until it worked with GB and GBA games.
+- Thanks to @TBemme for releasing the DS integration on which this is 99.99% based. I'm no coder and I've only changed a couple of things through experimentation until it worked with GB and GBA games.
+- Thanks to @2E0PGS for helping me when we should be working.
